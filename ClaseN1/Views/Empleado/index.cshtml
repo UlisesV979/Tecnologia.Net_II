@@ -7,9 +7,10 @@
         <div class="col-12-md">
             <table class="table table-bordered table-striped">
                 <thead>
-                <td>Nombre</td>
-                <td>Apellido</td>
-                <td>Email</td>
+                    <td>Nombre</td>
+                    <td>Apellido</td>
+                    <td>Teléfono</td>
+                    <td>Acciones</td>
                 </thead>
                 <tbody>
                     @foreach (var Empleado in ViewBag.Empleados)
@@ -17,7 +18,11 @@
                         <tr>
                             <td>@Empleado.Nombre</td>
                             <td>@Empleado.Apellido</td>
-                            <td>@Empleado.Email</td>
+                            <td>@Empleado.NumeroTelefonico</td>
+                            <td>
+                                <button type="button" class="btn btn-danger">Eliminar</button>
+                                <button type="button" class="btn btn-warning">Editar</button>
+                            </td>
                         </tr>
                     }
                 </tbody>
