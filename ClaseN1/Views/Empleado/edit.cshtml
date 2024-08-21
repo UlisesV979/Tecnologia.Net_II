@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Agregar_Empleados";
+    ViewData["Title"] = "Actualizar Empleado";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -14,26 +14,52 @@
     </div>
 
     <div class="card-body">
-        <form id="contactForm" data-sb-form-api-token="API_TOKEN">
+        <form id="contactForm" asp-controller="Empleado" asp-action="Keep" method="post">
             <div class="mb-3">
-                <label class="form-label" for="nombre"> Nombre</label>
-                <input class="form-control" id="nombre" type="text" value="" data-sb-validations="" />
+                <label class="form-label" for="nombre">Nombre</label>
+                <input class="form-control" id="nombre" name="Nombre" type="text" value="@Model.Nombre" required />
             </div>
             <div class="mb-3">
-                <label class="form-label" for="apellido">Last Apellido</label>
-                <input class="form-control" id="apellido" type="text" value="" data-sb-validations="" />
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="email">Email</label>
-                <input class="form-control" id="email" type="text" value="" data-sb-validations="" />
+                <label class="form-label" for="apellido">Apellido</label>
+                <input class="form-control" id="apellido" name="Apellido" type="text" value="@Model.Apellido" required />
             </div>
             <div class="mb-3">
                 <label class="form-label" for="telefono">Teléfono</label>
-                <input class="form-control" id="telefono" type="text" value="" data-sb-validations="" />
+                <input class="form-control" id="telefono" name="Telefono" type="text" value="@Model.NumeroTelefonico" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="dui">Dui</label>
+                <input class="form-control" id="dui" name="dui" type="text" value="@Model.Dui" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="typeEmployee">Tipo de Empleado</label>
+                <select id="typeEmployee" class="form-control" name="typeEmployee">
+                    @foreach (var tipoEmpleado in ViewBag.TipoEmpleados)
+                    {
+                        var option = new TagBuilder("option");
+                        option.Attributes["value"] = tipoEmpleado.Id.ToString();
+
+                        if (tipoEmpleado.Id == Model.TipoEmpleadoId)
+                        {
+                            option.Attributes["selected"] = "selected";
+                        }
+
+                        option.InnerHtml.Append(tipoEmpleado.Nombre);
+                        @option
+                    }
+                </select>
+
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="status">Estado</label>
+                <select id="estado" class="form-control" name="status" required>
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
             </div>
             <div class="row mb-3">
                 <div class="col-md-3">
-                    <a asp-controller="Empleado" asp-action="Update" class="btn btn-success">Actualizar</a>
+                    <button type="submit" class="btn btn-success">Actualizar</button>
                 </div>
             </div>
         </form>

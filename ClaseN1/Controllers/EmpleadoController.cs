@@ -31,40 +31,53 @@ namespace ClaseN1.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            var tipoEmpleados = _context.TipoEmpleados.ToList();
+            ViewBag.TipoEmpleados = tipoEmpleados;
             return View();
         }
 
         // Acción para manejar el POST del formulario de creación
         [HttpPost]
-        public IActionResult Create(Empleados empleado)
+        public IActionResult Keep(Empleados empleado)
         {
             if (ModelState.IsValid)
             {
+                empleado.FechaCreacion = DateTime.Now;
                 _context.Empleados.Add(empleado);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(empleado);
+            return View("Create");
         }
 
         // Acción para mostrar el formulario de edición
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var empleado = _context.Empleados.Find(id);
+            // Buscar el empleado por Id
+            var empleado = _context.Empleados.Include(e => e.TipoEmpleado).FirstOrDefault(x => x.Id == id);
+
+            // Evaluar si el empleado fue encontrado
             if (empleado == null)
             {
                 return NotFound();
             }
+
+            // Cargar la lista de tipos de empleados
+            var tipoEmpleados = _context.TipoEmpleados.ToList();
+            ViewBag.TipoEmpleados = tipoEmpleados;
+
+            // Retornar la vista con el modelo del empleado
             return View(empleado);
         }
 
         // Acción para manejar el POST del formulario de edición
         [HttpPost]
-        public IActionResult Edit(Empleados empleado)
+        public IActionResult Update(Empleados empleado)
         {
             if (ModelState.IsValid)
             {
+                empleado.FechaModificacion = DateTime.Now;
                 _context.Empleados.Update(empleado);
                 _context.SaveChanges();
                 return RedirectToAction("Index");

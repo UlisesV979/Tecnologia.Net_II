@@ -41,7 +41,7 @@
                             <td style="text-align: center; white-space: nowrap; padding: 10px;">@Empleado.Dui</td>
                             <td style="text-align: center; white-space: nowrap; padding: 10px;">@Empleado.TipoEmpleado.Nombre</td>
                             <td style="text-align: center; white-space: nowrap; padding: 10px;">
-                                @if(@Empleado.EsActivo == 1)
+                                @if(@Empleado.EsActivo)
                                 {
                                     <text>Activo</text>
                                 }
@@ -53,7 +53,8 @@
                             <td style="text-align: center;">
                                 <div style="display: flex; justify-content: center; gap: 10px;">
                                     <a asp-controller="Empleado" asp-action="Edit" asp-route-id="@Empleado.Id" class="btn btn-warning">Editar</a>
-                                    <a asp-controller="Empleado" asp-action="Delete" asp-route-id="@Empleado.Id" class="btn btn-danger">Eliminar</a>
+                                    <a asp-controller="Empleado" asp-action="Delete" asp-route-id="@Empleado.Id" class="btn btn-danger" 
+                                    data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="@Empleado.Id">Eliminar</a>
                                 </div>
                             </td>
                         </tr>
@@ -63,6 +64,46 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de Confirmación -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar este empleado?
+            </div>
+            <div class="modal-footer">
+                <form id="deleteForm" method="post" action="">
+                    <input type="hidden" name="id" value="" id="employeeId" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Agregar un event listener a todos los botones de eliminación
+        document.querySelectorAll('.btn-danger[data-bs-toggle="modal"]').forEach(button => {
+            button.addEventListener('click', function () {
+                // Obtener el ID del empleado desde el atributo data-id
+                var employeeId = this.getAttribute('data-id');
+                // Configurar la URL de acción del formulario en el modal
+                var actionUrl = '@Url.Action("Delete", "Empleado")';
+                document.getElementById('deleteForm').action = actionUrl;
+                // Configurar el campo oculto con el ID del empleado
+                document.getElementById('employeeId').value = employeeId;
+            });
+        });
+    });
+</script>
+
 @section Scripts 
 {
     <script src="~/lib/datatables.net/datatables.js"></script>
