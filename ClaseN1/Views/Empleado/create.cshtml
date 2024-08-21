@@ -2,8 +2,7 @@
     ViewData["Title"] = "Agregar_Empleados";
 }
 
-<h1>@ViewData["Title"]</h1>
-<br />
+<h1>@ViewData["Title"]</h1><br />
 <link rel="stylesheet" href="~/css/datatable.css" />
 
 <div class="container-fluid">
@@ -17,23 +16,23 @@
         <form id="contactForm" data-sb-form-api-token="API_TOKEN">
             <div class="mb-3">
                 <label class="form-label" for="nombre"> Nombre</label>
-                <input class="form-control" id="nombre" type="text" value="" data-sb-validations="" />
+                <input class="form-control" id="nombre" type="text" placeholder="First Name" data-sb-validations="" />
             </div>
             <div class="mb-3">
                 <label class="form-label" for="apellido">Last Apellido</label>
-                <input class="form-control" id="apellido" type="text" value="" data-sb-validations="" />
+                <input class="form-control" id="apellido" type="text" placeholder="Last Name" data-sb-validations="" />
             </div>
             <div class="mb-3">
                 <label class="form-label" for="email">Email</label>
-                <input class="form-control" id="email" type="text" value="" data-sb-validations="" />
+                <input class="form-control" id="email" type="text" placeholder="Email" data-sb-validations="" />
             </div>
             <div class="mb-3">
                 <label class="form-label" for="telefono">Teléfono</label>
-                <input class="form-control" id="telefono" type="text" value="" data-sb-validations="" />
+                <input class="form-control" id="telefono" type="text" placeholder="Telephone" data-sb-validations="" />
             </div>
             <div class="row mb-3">
                 <div class="col-md-3">
-                    <a asp-controller="Empleado" asp-action="Update" class="btn btn-success">Actualizar</a>
+                    <a asp-controller="Empleado" asp-action="Keep" class="btn btn-success">Guardar</a>
                 </div>
             </div>
         </form>

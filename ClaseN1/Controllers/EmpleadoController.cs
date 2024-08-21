@@ -1,6 +1,7 @@
 using ClaseN1.Data;
 using ClaseN1.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace ClaseN1.Controllers
@@ -11,59 +12,88 @@ namespace ClaseN1.Controllers
         private readonly ApplicationDbContext _context;
 
         public EmpleadoController(
-            ILogger<EmpleadoController> logger, 
+            ILogger<EmpleadoController> logger,
             ApplicationDbContext context)
         {
             _logger = logger;
             _context = context;
         }
 
+        // Acción para la vista principal
         public IActionResult Index()
         {
-            ViewBag.Empleados = _context.Empleados.ToList();
+            var empleados = _context.Empleados.Include(e=> e.TipoEmpleado).ToList();
+            ViewBag.Empleados = empleados;
             return View();
         }
 
-        [HttpGet("GetEmpleados")]
-        public IActionResult GetEmpleados()
+        // Acción para mostrar el formulario de creación
+        [HttpGet]
+        public IActionResult Create()
         {
-            var result = _context.Empleados.ToList();
-            if (!result.Any())
+            return View();
+        }
+
+        // Acción para manejar el POST del formulario de creación
+        [HttpPost]
+        public IActionResult Create(Empleados empleado)
+        {
+            if (ModelState.IsValid)
             {
-                return Json(new { data = new string[] { } });
+                _context.Empleados.Add(empleado);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
             }
-            return Json(new { data = result.Where(x => x.EsActivo)});
+            return View(empleado);
         }
 
-        [HttpPost("KeepEmpleados")]
-        public async Task<IActionResult> Keep(Empleados empleado)
+        // Acción para mostrar el formulario de edición
+        [HttpGet]
+        public IActionResult Edit(int id)
         {
-            return RedirectToAction("Index", "Empleado");
+            var empleado = _context.Empleados.Find(id);
+            if (empleado == null)
+            {
+                return NotFound();
+            }
+            return View(empleado);
         }
 
-        [HttpPut("UpdateEmpleados")]
-        public IActionResult Update(Empleados empleado)
+        // Acción para manejar el POST del formulario de edición
+        [HttpPost]
+        public IActionResult Edit(Empleados empleado)
         {
-            empleado.EsActivo = true;
-            _context.Empleados.Update(empleado);
-            return Ok(new string[] { "success", "Empleado actualizado exitosamente", "El empleado sera actualizado en el listado" });
+            if (ModelState.IsValid)
+            {
+                _context.Empleados.Update(empleado);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(empleado);
         }
 
-        [HttpDelete("DeleteEmpleados")]
-        public IActionResult Delete(int Id)
+        // Acción para manejar la eliminación
+        [HttpGet]
+        public IActionResult Delete(int id)
         {
-            Empleados employee = _context.Empleados.Where(x => x.Id == Id).First();
-            _context.Empleados.Remove(employee);
-            return Ok(new string[] { "success", "Empleado eliminado exitosamente", "El empleado sera removido del listado" });
+            var empleado = _context.Empleados.Find(id);
+            if (empleado == null)
+            {
+                return NotFound();
+            }
+            return View(empleado);
         }
 
-        [HttpDelete("SoftDeleteEmpleados")]
-        public async Task<IActionResult> SoftDeleteEmpleado(int Id)
+        [HttpPost, ActionName("Delete")]
+        public IActionResult DeleteConfirmed(int id)
         {
-            Empleados empleado = _context.Empleados.Where(x => x.Id == Id).First();
-            empleado.EsActivo = false;
-            _context.Empleados.Update(empleado);
-            return Ok(new string[] { "success", "Empleado inhabilitado exitosamente", "El empleado sera removido del listado" });
+            var empleado = _context.Empleados.Find(id);
+            if (empleado != null)
+            {
+                _context.Empleados.Remove(empleado);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Index");
         }
     }
 }
