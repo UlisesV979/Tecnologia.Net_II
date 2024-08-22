@@ -1,0 +1,105 @@
+﻿@{
+    ViewData["Title"] = "Tipo de Empleados";
+}
+
+@section styles
+{
+    <link href="~/lib/datatables.net-bs5/datatables.bootstrap5.min.css" rel="stylesheet" />
+}
+
+<h1>@ViewData["Title"]</h1><br />
+<link rel="stylesheet" href="~/css/datatable.css" />
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <a asp-controller="TipoEmpleado" asp-action="Create" class="btn btn-success">Agregar</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12-md">
+            <table class="table table-bordered" id="Table">
+                <thead>
+                    <tr>
+                        <th style="text-align: center;">Nombre</th>
+                        <th style="text-align: center;">Estado</th>
+                        <th style="text-align: center;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var TipoEmpleado in ViewBag.TipoEmpleados)
+                    {
+                        <tr>
+                            <td style="text-align: center; white-space: nowrap; padding: 10px;">@TipoEmpleado.Nombre</td>
+                            <td style="text-align: center; white-space: nowrap; padding: 10px;">
+                                @if(@TipoEmpleado.EsActivo)
+                                {
+                                    <text>Activo</text>
+                                }
+                                else
+                                {
+                                    <text>Inactivo</text>
+                                }
+                            </td>
+                            <td style="text-align: center;">
+                                <div style="display: flex; justify-content: center; gap: 10px;">
+                                    <a asp-controller="TipoEmpleado" asp-action="Edit" asp-route-id="@TipoEmpleado.Id" class="btn btn-warning">Editar</a>
+                                    <a asp-controller="TipoEmpleado" asp-action="Delete" asp-route-id="@TipoEmpleado.Id" class="btn btn-danger" 
+                                    data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="@TipoEmpleado.Id">Eliminar</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmación -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar este tipo de empleado?
+            </div>
+            <div class="modal-footer">
+                <form id="deleteForm" method="post" action="">
+                    <input type="hidden" name="id" value="" id="employeeId" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Agregar un event listener a todos los botones de eliminación
+        document.querySelectorAll('.btn-danger[data-bs-toggle="modal"]').forEach(button => {
+            button.addEventListener('click', function () {
+                // Obtener el ID del tipoempleado desde el atributo data-id
+                var employeeId = this.getAttribute('data-id');
+                // Configurar la URL de acción del formulario en el modal
+                var actionUrl = '@Url.Action("Delete", "TipoEmpleado")';
+                document.getElementById('deleteForm').action = actionUrl;
+                // Configurar el campo oculto con el ID del tipoempleado
+                document.getElementById('employeeId').value = employeeId;
+            });
+        });
+    });
+</script>
+
+@section Scripts 
+{
+    <script src="~/lib/datatables.net/datatables.js"></script>
+    <script src="~/lib/datatables.net/datatables.min.js"></script>
+    <script src="~/lib/datatables.net-bs5/datatables.bootstrap5.min.js"></script>
+    <script>let table = new DataTable('#Table');</script>
+}

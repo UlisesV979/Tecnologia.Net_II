@@ -1,0 +1,82 @@
+﻿@{
+    ViewData["Title"] = "Actualizar Tipo de Empleado";
+}
+
+<h1>@ViewData["Title"]</h1>
+<br />
+
+@section styles
+{
+    <link href="~/lib/datatables.net-bs5/datatables.bootstrap5.min.css" rel="stylesheet" />
+}
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <a asp-controller="TipoEmpleado" asp-action="Index" class="btn btn-success">Regresar</a>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <form id="contactForm" asp-controller="TipoEmpleado" asp-action="Update" method="post">
+
+            <!--ID del tipoempleado que se actualizara-->
+            <input type="hidden" name="Id" value="@Model.Id" />
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @Html.ValidationSummary()
+                </div>
+            }
+            <div class="mb-3">
+                <label class="form-label" for="Nombre">Nombre</label>
+                <input class="form-control" id="Nombre" name="Nombre" type="text" value="@Model.Nombre" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="EsActivo">Estado</label>
+                <select id="EsActivo" class="form-control" name="EsActivo" required>
+                    @{
+                        var options = new List<TagBuilder>();
+
+                        var optionTrue = new TagBuilder("option");
+                        optionTrue.Attributes["value"] = "true";
+                        if (Model.EsActivo)
+                        {
+                            optionTrue.Attributes["selected"] = "selected";
+                        }
+                        optionTrue.InnerHtml.Append("Activo");
+                        options.Add(optionTrue);
+
+                        var optionFalse = new TagBuilder("option");
+                        optionFalse.Attributes["value"] = "false";
+                        if (!Model.EsActivo)
+                        {
+                            optionFalse.Attributes["selected"] = "selected";
+                        }
+                        optionFalse.InnerHtml.Append("Inactivo");
+                        options.Add(optionFalse);
+
+                        foreach (var option in options)
+                        {
+                            @option
+                        }
+                    }
+                </select>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-success">Actualizar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/lib/datatables.net/datatables.js"></script>
+    <script src="~/lib/datatables.net/datatables.min.js"></script>
+    <script src="~/lib/datatables.net-bs5/datatables.bootstrap5.min.js"></script>
+    <script>let table = new DataTable('#Table');</script>
+}
