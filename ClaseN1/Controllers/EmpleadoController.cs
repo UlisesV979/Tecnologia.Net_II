@@ -40,6 +40,7 @@ namespace ClaseN1.Controllers
         [HttpPost]
         public IActionResult Keep(Empleados empleado)
         {
+            // Verifica si el modelo es válido
             if (ModelState.IsValid)
             {
                 empleado.FechaCreacion = DateTime.Now;
@@ -47,7 +48,10 @@ namespace ClaseN1.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View("Create");
+
+            // Recarga la lista de tipos de empleados
+            ViewBag.TipoEmpleados = _context.TipoEmpleados.ToList();
+            return View("Create", empleado);
         }
 
         // Acción para mostrar el formulario de edición
@@ -66,8 +70,6 @@ namespace ClaseN1.Controllers
             // Cargar la lista de tipos de empleados
             var tipoEmpleados = _context.TipoEmpleados.ToList();
             ViewBag.TipoEmpleados = tipoEmpleados;
-
-            // Retornar la vista con el modelo del empleado
             return View(empleado);
         }
 
@@ -82,7 +84,10 @@ namespace ClaseN1.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(empleado);
+
+            // Recarga la lista de tipos de empleados
+            ViewBag.TipoEmpleados = _context.TipoEmpleados.ToList();
+            return View("Create", empleado);
         }
 
         // Acción para manejar la eliminación

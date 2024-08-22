@@ -2,8 +2,13 @@
     ViewData["Title"] = "Nuevo Empleado";
 }
 
-<h1>@ViewData["Title"]</h1><br />
-<link rel="stylesheet" href="~/css/datatable.css" />
+<h1>@ViewData["Title"]</h1>
+<br />
+
+@section styles
+{
+    <link href="~/lib/datatables.net-bs5/datatables.bootstrap5.min.css" rel="stylesheet" />
+}
 
 <div class="container-fluid">
     <div class="row mb-3">
@@ -14,38 +19,43 @@
 
     <div class="card-body">
         <form id="contactForm" asp-controller="Empleado" asp-action="Keep" method="post">
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @Html.ValidationSummary()
+                </div>
+            }
+
             <div class="mb-3">
                 <label class="form-label" for="nombre">Nombre</label>
                 <input class="form-control" id="nombre" name="Nombre" type="text" placeholder="First Name" required />
             </div>
             <div class="mb-3">
-                <label class="form-label" for="apellido">Apellido</label>
-                <input class="form-control" id="apellido" name="Apellido" type="text" placeholder="Last Name" required />
+                <label class="form-label" for="Apellido">Apellido</label>
+                <input class="form-control" id="Apellido" name="Apellido" type="text" placeholder="Last Name" required />
             </div>
             <div class="mb-3">
-                <label class="form-label" for="telefono">Teléfono</label>
-                <input class="form-control" id="telefono" name="Telefono" type="text" placeholder="Telephone" required />
+                <label class="form-label" for="NumeroTelefonico">Teléfono</label>
+                <input class="form-control" id="NumeroTelefonico" name="NumeroTelefonico" type="text" placeholder="Telephone" required />
             </div>
             <div class="mb-3">
                 <label class="form-label" for="dui">Dui</label>
-                <input class="form-control" id="dui" name="dui" type="text" placeholder="Document" required />
+                <input class="form-control" id="dui" name="Dui" type="text" placeholder="Document" required />
             </div>
             <div class="mb-3">
-                <label class="form-label" for="typeEmployee">Tipo de Empleado</label>
-                <select id="typeEmployee" class="form-control" name="typeEmployee">
+                <label class="form-label" for="TipoEmpleadoId">Tipo de Empleado</label>
+                <select id="TipoEmpleadoId" class="form-control" name="TipoEmpleadoId" required>
                     @foreach (var tipoEmpleado in ViewBag.TipoEmpleados)
                     {
-                        <option value="@tipoEmpleado.Id" ()>
-                            @tipoEmpleado.Nombre
-                        </option>
+                        <option value="@tipoEmpleado.Id">@tipoEmpleado.Nombre</option>
                     }
                 </select>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="status">Estado</label>
-                <select id="estado" class="form-control" name="status" required>
-                    <option value="1">Activo</option>
-                    <option value="0">Inactivo</option>
+                <select id="estado" class="form-control" name="EsActivo" required>
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
                 </select>
             </div>
             <div class="row mb-3">
@@ -56,3 +66,11 @@
         </form>
     </div>
 </div>
+
+@section Scripts 
+{
+    <script src="~/lib/datatables.net/datatables.js"></script>
+    <script src="~/lib/datatables.net/datatables.min.js"></script>
+    <script src="~/lib/datatables.net-bs5/datatables.bootstrap5.min.js"></script>
+    <script>let table = new DataTable('#Table');</script>
+}
