@@ -4,7 +4,11 @@
 
 <h1>@ViewData["Title"]</h1>
 <br />
-<link rel="stylesheet" href="~/css/datatable.css" />
+
+@section styles
+{
+    <link href="~/lib/datatables.net-bs5/datatables.bootstrap5.min.css" rel="stylesheet" />
+}
 
 <div class="container-fluid">
     <div class="row mb-3">
@@ -15,25 +19,35 @@
 
     <div class="card-body">
         <form id="contactForm" asp-controller="Empleado" asp-action="Update" method="post">
+
+            <!--ID del empleado que se actualizara-->
+            <input type="hidden" name="Id" value="@Model.Id" />
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @Html.ValidationSummary()
+                </div>
+            }
             <div class="mb-3">
-                <label class="form-label" for="nombre">Nombre</label>
-                <input class="form-control" id="nombre" name="Nombre" type="text" value="@Model.Nombre" required />
+                <label class="form-label" for="Nombre">Nombre</label>
+                <input class="form-control" id="Nombre" name="Nombre" type="text" value="@Model.Nombre" required />
             </div>
             <div class="mb-3">
-                <label class="form-label" for="apellido">Apellido</label>
-                <input class="form-control" id="apellido" name="Apellido" type="text" value="@Model.Apellido" required />
+                <label class="form-label" for="Apellido">Apellido</label>
+                <input class="form-control" id="Apellido" name="Apellido" type="text" value="@Model.Apellido" required />
             </div>
             <div class="mb-3">
-                <label class="form-label" for="telefono">Teléfono</label>
-                <input class="form-control" id="telefono" name="Telefono" type="text" value="@Model.NumeroTelefonico" required />
+                <label class="form-label" for="NumeroTelefonico">Teléfono</label>
+                <input class="form-control" id="NumeroTelefonico" name="NumeroTelefonico" type="text" value="@Model.NumeroTelefonico" required />
             </div>
             <div class="mb-3">
-                <label class="form-label" for="dui">Dui</label>
-                <input class="form-control" id="dui" name="dui" type="text" value="@Model.Dui" required />
+                <label class="form-label" for="Dui">Dui</label>
+                <input class="form-control" id="Dui" name="Dui" type="text" value="@Model.Dui" required />
             </div>
             <div class="mb-3">
-                <label class="form-label" for="typeEmployee">Tipo de Empleado</label>
-                <select id="typeEmployee" class="form-control" name="typeEmployee">
+                <label class="form-label" for="TipoEmpleadoId">Tipo de Empleado</label>
+                <select id="TipoEmpleadoId" class="form-control" name="TipoEmpleadoId" required>
                     @foreach (var tipoEmpleado in ViewBag.TipoEmpleados)
                     {
                         var option = new TagBuilder("option");
@@ -48,13 +62,36 @@
                         @option
                     }
                 </select>
-
             </div>
             <div class="mb-3">
-                <label class="form-label" for="status">Estado</label>
-                <select id="estado" class="form-control" name="status" required>
-                    <option value="1">Activo</option>
-                    <option value="0">Inactivo</option>
+                <label class="form-label" for="EsActivo">Estado</label>
+                <select id="EsActivo" class="form-control" name="EsActivo" required>
+                    @{
+                        var options = new List<TagBuilder>();
+
+                        var optionTrue = new TagBuilder("option");
+                        optionTrue.Attributes["value"] = "true";
+                        if (Model.EsActivo)
+                        {
+                            optionTrue.Attributes["selected"] = "selected";
+                        }
+                        optionTrue.InnerHtml.Append("Activo");
+                        options.Add(optionTrue);
+
+                        var optionFalse = new TagBuilder("option");
+                        optionFalse.Attributes["value"] = "false";
+                        if (!Model.EsActivo)
+                        {
+                            optionFalse.Attributes["selected"] = "selected";
+                        }
+                        optionFalse.InnerHtml.Append("Inactivo");
+                        options.Add(optionFalse);
+
+                        foreach (var option in options)
+                        {
+                            @option
+                        }
+                    }
                 </select>
             </div>
             <div class="row mb-3">
@@ -65,3 +102,11 @@
         </form>
     </div>
 </div>
+
+@section Scripts
+{
+    <script src="~/lib/datatables.net/datatables.js"></script>
+    <script src="~/lib/datatables.net/datatables.min.js"></script>
+    <script src="~/lib/datatables.net-bs5/datatables.bootstrap5.min.js"></script>
+    <script>let table = new DataTable('#Table');</script>
+}

@@ -79,19 +79,33 @@ namespace ClaseN1.Controllers
         {
             if (ModelState.IsValid)
             {
-                empleado.FechaModificacion = DateTime.Now;
-                _context.Empleados.Update(empleado);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
+                // Buscar la entidad existente en la base de datos
+                var empleadoExistente = _context.Empleados.FirstOrDefault(e => e.Id == empleado.Id);
+
+                if (empleadoExistente != null)
+                {
+                    // Actualizar los campos
+                    empleadoExistente.Nombre = empleado.Nombre;
+                    empleadoExistente.Apellido = empleado.Apellido;
+                    empleadoExistente.Dui = empleado.Dui;
+                    empleadoExistente.NumeroTelefonico = empleado.NumeroTelefonico;
+                    empleadoExistente.TipoEmpleadoId = empleado.TipoEmpleadoId;
+                    empleadoExistente.FechaModificacion = DateTime.Now;
+                    empleadoExistente.EsActivo = empleado.EsActivo;
+                    _context.Empleados.Update(empleadoExistente);
+                    _context.SaveChanges();
+
+                    return RedirectToAction("Index");
+                }
             }
 
-            // Recarga la lista de tipos de empleados
+            // Recargar la lista de tipos de empleados si hay error
             ViewBag.TipoEmpleados = _context.TipoEmpleados.ToList();
-            return View("Create", empleado);
+            return View("Edit", empleado);
         }
 
         // Acción para manejar la eliminación
-        [HttpGet]
+        [HttpDelete]
         public IActionResult Delete(int id)
         {
             var empleado = _context.Empleados.Find(id);
